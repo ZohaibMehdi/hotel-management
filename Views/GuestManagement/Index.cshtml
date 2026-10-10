@@ -1,0 +1,87 @@
+@model TestApplication.Models.GuestManagementViewModel
+@{
+    ViewData["Title"] = "Guests and bookings";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Guests and bookings</h1>
+        <p class="text-muted mb-0">Record guest details, assign rooms, and complete stays.</p>
+    </div>
+    <div>
+        <a class="btn btn-outline-primary" asp-action="CreateGuest">Add guest</a>
+        <a class="btn btn-primary" asp-action="CreateBooking">Confirm booking</a>
+    </div>
+</div>
+
+@if (TempData["StatusMessage"] is string statusMessage)
+{
+    <div class="alert alert-success" role="status">@statusMessage</div>
+}
+
+<section class="mb-5" aria-labelledby="bookings-heading">
+    <h2 id="bookings-heading" class="h4">Bookings and stays</h2>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr><th>Guest</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+            @foreach (var booking in Model.Bookings)
+            {
+                <tr>
+                    <td>@booking.Guest.Name</td>
+                    <td>@booking.Room.RoomNumber (@booking.Room.RoomType)</td>
+                    <td>@booking.CheckInDate.ToString("yyyy-MM-dd")</td>
+                    <td>@(booking.CheckOutDate?.ToString("yyyy-MM-dd") ?? "—")</td>
+                    <td>
+                        <span class="badge @(booking.CheckOutDate is null ? "text-bg-primary" : "text-bg-secondary")">
+                            @(booking.CheckOutDate is null ? "In stay" : "Checked out")
+                        </span>
+                    </td>
+                    <td>
+                        @if (booking.CheckOutDate is null)
+                        {
+                            <a class="btn btn-sm btn-outline-primary" asp-action="CheckOut" asp-route-id="@booking.Id">Check out</a>
+                        }
+                    </td>
+                </tr>
+            }
+            @if (Model.Bookings.Count == 0)
+            {
+                <tr><td colspan="6" class="text-center text-muted py-4">No bookings have been confirmed yet.</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section aria-labelledby="guests-heading">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h2 id="guests-heading" class="h4 mb-0">Guest records</h2>
+        <span class="badge text-bg-secondary">@Model.Guests.Count</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr><th>Guest name</th><th>Father's name</th><th>NIC number</th><th>Phone number</th><th>Address</th></tr>
+            </thead>
+            <tbody>
+            @foreach (var guest in Model.Guests)
+            {
+                <tr>
+                    <td>@guest.Name</td>
+                    <td>@(guest.FathersName ?? "—")</td>
+                    <td>@guest.NicNumber</td>
+                    <td>@(guest.PhoneNumber ?? "—")</td>
+                    <td>@(guest.Address ?? "—")</td>
+                </tr>
+            }
+            @if (Model.Guests.Count == 0)
+            {
+                <tr><td colspan="5" class="text-center text-muted py-4">No guests added yet.</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</section>

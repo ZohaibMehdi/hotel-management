@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Hotel Management";
+}
+
+<div class="p-5 mb-4 bg-body-tertiary rounded-3">
+    <div class="container-fluid py-4">
+        <h1 class="display-5 fw-bold">Hotel management, made simple</h1>
+        <p class="col-md-8 fs-5">A secure workspace for hotel operators, with tenant onboarding managed centrally.</p>
+        @if (User.IsInRole("SuperAdmin"))
+        {
+            <a class="btn btn-primary btn-lg" asp-controller="SuperAdmin" asp-action="Index">Manage tenants</a>
+        }
+        else if (User.IsInRole("TenantAdmin"))
+        {
+            <a class="btn btn-primary btn-lg" asp-controller="TenantPortal" asp-action="Index">Open hotel workspace</a>
+        }
+        else
+        {
+            <a class="btn btn-primary btn-lg" asp-controller="Account" asp-action="Login">Sign in</a>
+        }
+    </div>
+</div>

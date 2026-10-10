@@ -1,0 +1,55 @@
+@model TestApplication.Models.CreateBookingViewModel
+@{
+    ViewData["Title"] = "Confirm booking";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <h1>Confirm booking</h1>
+        <p class="text-muted">Assign a guest to one of your rooms. The stay remains active until a checkout date is entered.</p>
+        @if (Model.Guests.Count == 0)
+        {
+            <div class="alert alert-warning">Add a guest record before confirming a booking. <a asp-action="CreateGuest">Add guest</a></div>
+        }
+        @if (Model.Rooms.Count == 0)
+        {
+            <div class="alert alert-warning">Add a room before confirming a booking. <a asp-controller="TenantPortal" asp-action="Index">Manage rooms</a></div>
+        }
+        <form asp-action="CreateBooking" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <div class="mb-3">
+                <label asp-for="GuestId" class="form-label"></label>
+                <select asp-for="GuestId" class="form-select">
+                    <option value="">Select a guest</option>
+                    @foreach (var guest in Model.Guests)
+                    {
+                        <option value="@guest.Id">@guest.Name — @guest.NicNumber</option>
+                    }
+                </select>
+                <span asp-validation-for="GuestId" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="RoomId" class="form-label"></label>
+                <select asp-for="RoomId" class="form-select">
+                    <option value="">Select a room</option>
+                    @foreach (var room in Model.Rooms)
+                    {
+                        <option value="@room.Id">Room @room.RoomNumber — @room.RoomType</option>
+                    }
+                </select>
+                <span asp-validation-for="RoomId" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="CheckInDate" class="form-label"></label>
+                <input asp-for="CheckInDate" type="date" class="form-control" />
+                <span asp-validation-for="CheckInDate" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary" disabled="@(Model.Guests.Count == 0 || Model.Rooms.Count == 0)">Confirm booking</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

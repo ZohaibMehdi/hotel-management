@@ -1,0 +1,17 @@
+## Build output
+**/bin/
+**/obj/
+**/publish/
+
+## Visual Studio and user-specific settings
+.vs/
+*.user
+*.suo
+
+## Local secrets and machine-specific configuration
+appsettings.Local.json
+appsettings.Production.json
+secrets.json
+
+## Logs
+*.log
